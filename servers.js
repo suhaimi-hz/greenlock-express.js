@@ -155,14 +155,12 @@ function wrapDefaultSniCallback(greenlock, secureOpts) {
 			};
 		}
   */
-    if (secureOpts.SNICallback) {
-        console.warn();
-        console.warn("[warning] Ignoring the given tlsOptions.SNICallback function.");
-        console.warn();
-        console.warn("          We're very open to implementing support for this,");
-        console.warn("          we just don't understand the use case yet.");
-        console.warn("          Please open an issue to discuss. We'd love to help.");
-        console.warn();
+
+    if (secureOpts.SNICallback && "function" === typeof secureOpts.SNICallback) {
+        const fn = secureOpts.SNICallback;
+        delete secureOpts.SNICallback;
+        secureOpts.SNICallback = fn(greenlock, secureOpts, sni);
+        return secureOpts;
     }
 
     // TODO greenlock.servername for workers
